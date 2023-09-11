@@ -133,10 +133,10 @@ void dictionaryTest() {
         LoadDictionary(&dictionaries[i], W_persisted_name);
     }
 
-    Spectrogram aa = GetSpectrogramFromDictionary(&dictionaries[0], 0);
+//    Spectrogram aa = GetSpectrogramFromDictionary(&dictionaries[0], 0);
 
 
-    SaveSpectrogramToCSV("spectest.csv", &aa);
+//    SaveSpectrogramToCSV("spectest.csv", &aa);
 
 }
 
@@ -157,14 +157,36 @@ Dictionary HardFilterSpectrograms(Dictionary *dictionary, unsigned int numNewRow
     return filtered;
 }
 
-Spectrogram GetSpectrogramFromDictionary(Dictionary *dictionary, unsigned int note) {
-    Spectrogram noteSpectrogram = CreateSpectrogram(dictionary->shape[1], dictionary->shape[0]);
+Spectrogram GetSpectrogramFromDictionary(Dictionary *dictionary, unsigned int axis, unsigned int index){
+    Spectrogram noteSpectrogram;
 
-    for(int r = 0; r < noteSpectrogram.rows; r++){
-        for (int c = 0; c < noteSpectrogram.cols; c++) {
-            noteSpectrogram.array[r][c] = dictionary->data[c][r][note];
+    if(axis == 0){
+        noteSpectrogram = CreateSpectrogram(dictionary->shape[1], dictionary->shape[2]);
+
+        for(int r = 0; r < noteSpectrogram.rows; r++){
+            for (int c = 0; c < noteSpectrogram.cols; c++) {
+                noteSpectrogram.array[r][c] = dictionary->data[index][r][c];
+            }
         }
     }
+    else if(axis == 1){
+//        Spectrogram noteSpectrogram = CreateSpectrogram(dictionary->shape[1], dictionary->shape[0]);
+        fprintf(stderr, "GetSpectrogramFromDictionary: axis == 1 not implemented yet\n");
+    }
+    else if(axis == 2){
+        noteSpectrogram = CreateSpectrogram(dictionary->shape[1], dictionary->shape[0]);
+
+        for(int r = 0; r < noteSpectrogram.rows; r++){
+            for (int c = 0; c < noteSpectrogram.cols; c++) {
+                noteSpectrogram.array[r][c] = dictionary->data[c][r][index];
+            }
+        }
+    }
+    else{
+        fprintf(stderr, "GetSpectrogramFromDictionary: axis must be 0, 1 or 2\n");
+        exit(1);
+    }
+
 
     return noteSpectrogram;
 }

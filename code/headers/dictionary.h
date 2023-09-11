@@ -22,7 +22,7 @@ void PrintDictionary(Dictionary* dictionary);
 // TODO: this function, remember dict dims are (10, 4097, 88)
 Dictionary HardFilterSpectrograms(Dictionary* dictionary, unsigned int numNewRows);
 
-Spectrogram GetSpectrogramFromDictionary(Dictionary* dictionary, unsigned int note);
+Spectrogram GetSpectrogramFromDictionary(Dictionary* dictionary, unsigned int axis, unsigned int index);
 
 void dictionaryTest();
 

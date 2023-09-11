@@ -54,7 +54,7 @@ Spectrogram HardFilterSpectrogram(Spectrogram* spectrogram, unsigned int numNewR
 void SaveSpectrogramToCSV(const char *filename, Spectrogram* spectrogram) {
     FILE *file = fopen(filename, "w");
     if (file == NULL) {
-        perror("Error opening file");
+        fprintf(stderr, "SaveSpectrogramToCSV: Error opening file");
         return;
     }
 
