@@ -100,7 +100,7 @@ void PrintDictionary(Dictionary *dictionary) {
 }
 
 void dictionaryTest() {
-    const char *dictionary_directory = "C:\\Users\\ruanb\\CLionProjects\\C Piano Transcription\\Piano Transcription (C)\\data_persisted\\dictionaries\\";
+    const char *dictionary_directory = "C:\\Users\\ruanb\\OneDrive\\Desktop\\Piano Transcripton\\Piano Transcription (C)\\data_persisted\\dictionaries\\";
     const char *piano_W[3] = {"AkPnBsdf", "AkPnStgb", "AkPnBcht"};
 
     Dictionary dictionaries[3];
