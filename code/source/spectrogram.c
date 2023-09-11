@@ -71,3 +71,25 @@ void SaveSpectrogramToCSV(const char *filename, Spectrogram* spectrogram) {
 
     fclose(file);
 }
+
+Spectrogram ShiftSpectrogram(Spectrogram *spectrogram, unsigned int numShifts) {
+    Spectrogram shifted = CreateSpectrogram(spectrogram->rows, spectrogram->cols);
+
+    for (int i = 0; i < spectrogram->rows; i++) {
+        for (int j = 0; j < spectrogram->cols; j++) {
+            if (j + numShifts < spectrogram->cols) {
+                shifted.array[i][j + numShifts] = spectrogram->array[i][j];
+            }
+        }
+    }
+
+    for (int i = 0; i < spectrogram->rows; i++) {
+        for (int j = 0; j < numShifts; j++) {
+            shifted.array[i][j ] = 0;
+
+        }
+    }
+
+    return shifted;
+
+}

@@ -15,8 +15,7 @@ add_executable(C_Piano_Transcription code/source/main.c
         code/source/activations.c
         code/headers/activations.h
         code/source/wav.c
-        code/headers/wav.h
-)
+        code/headers/wav.h)
 
 
 find_package(HDF5 COMPONENTS C HL)
