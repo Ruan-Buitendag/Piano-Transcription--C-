@@ -47,7 +47,7 @@ Spectrogram MatrixMultiply(const Spectrogram *a, const Spectrogram *b) {
 }
 
 // TODO: optimisation is probably possible here
-Spectrogram SumSpectrograms(Spectrogram *a, unsigned int numSpectrograms, unsigned int axis) {
+Spectrogram SumSpectrogramsAlongAxis(Spectrogram *a, unsigned int numSpectrograms, unsigned int axis) {
     Spectrogram result = CreateSpectrogram(a[0].rows, a[0].cols);
 
     for (int r = 0; r < result.rows; r++) {
@@ -93,19 +93,20 @@ Spectrogram ComputeActivations(const Spectrogram *X, unsigned int iterations, do
 //    denoms_cropped_for_end.append(tab)
     Spectrogram convolutions[T];
 
+    Spectrogram ones = CreateSpectrogram(dictionary->shape[1], ncol);
+    FillSpectrogram(&ones, 1);
+
     for (int t = 0; t < T; t++) {
         Spectrogram tspec = GetSpectrogramFromDictionary(dictionary, 0, t);
         Spectrogram tspec_transposed = Transpose(&tspec);
-
-        Spectrogram ones = CreateSpectrogram(dictionary->shape[1], ncol);
-        FillSpectrogram(&ones, 1);
 
         convolutions[t] = MatrixMultiply(&tspec_transposed, &ones);
 
         DestroySpectrogram(&tspec);
         DestroySpectrogram(&tspec_transposed);
-        DestroySpectrogram(&ones);
     }
+
+    DestroySpectrogram(&ones);
 
     Spectrogram denom_all_col = SumSpectrograms(convolutions, T, 0);
 
@@ -126,7 +127,7 @@ Spectrogram ComputeActivations(const Spectrogram *X, unsigned int iterations, do
 //    }
 
 
-    for(int i = 0; i < T; i++){
+    for (int i = 0; i < T; i++) {
         DestroySpectrogram(&convolutions[i]);
     }
 
@@ -160,7 +161,7 @@ Spectrogram ComputeActivations(const Spectrogram *X, unsigned int iterations, do
 
         DestroySpectrogram(&A);
 
-        for(int t = 0 ; t < T; t++){
+        for (int t = 0; t < T; t++) {
             Spectrogram W_at_t = GetSpectrogramFromDictionary(dictionary, 0, t);
             Spectrogram transposed = Transpose(&W_at_t);
             DestroySpectrogram(&W_at_t);
@@ -172,8 +173,8 @@ Spectrogram ComputeActivations(const Spectrogram *X, unsigned int iterations, do
             DestroySpectrogram(&X_hadamard_A_windowed);
             DestroySpectrogram(&transposed);
 
-            for(int i = 0; i < multiplied.rows; i++){
-                for(int j = 0; j < multiplied.cols; j++){
+            for (int i = 0; i < multiplied.rows; i++) {
+                for (int j = 0; j < multiplied.cols; j++) {
                     num.array[i][j] += multiplied.array[i][j];
                 }
             }
@@ -185,7 +186,7 @@ Spectrogram ComputeActivations(const Spectrogram *X, unsigned int iterations, do
 
             obj = BetaDivergence(X, &conved, beta);
 
-            if((fabs(obj - obj_prev) / error_int ) < maximum_error){
+            if ((fabs(obj - obj_prev) / error_int) < maximum_error) {
                 printf("ComputeActivations: Converged sufficiently\n");
                 break;
             }
@@ -211,13 +212,27 @@ ComputeConvolution(Dictionary const *dictionary, Spectrogram const *activations,
         DestroySpectrogram(&shifted);
     }
 
-    Spectrogram conv_sum = SumSpectrograms(convolutions, t, 0);
+    Spectrogram conv_sum = SumSpectrogramsAlongAxis(convolutions, t, 0);
 
-    for(int i = 0; i < t; i++){
+    for (int i = 0; i < t; i++) {
         DestroySpectrogram(&convolutions[i]);
     }
 
     return conv_sum;
+}
+
+Spectrogram SumSpectrograms(Spectrogram *a, unsigned int numSpectrograms) {
+    Spectrogram result = CreateSpectrogram(a[0].rows, a[0].cols);
+
+    for(int i = 0; i < numSpectrograms; i++) {
+        for(int j = 0; j < a[i].rows; j++) {
+            for(int k = 0; k < a[i].cols; k++) {
+                result.array[j][k] += a[i].array[j][k];
+            }
+        }
+    }
+
+    return result;
 }
 
 

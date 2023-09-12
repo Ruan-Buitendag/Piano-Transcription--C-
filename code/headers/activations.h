@@ -11,7 +11,8 @@
 double BetaDivergence(Spectrogram const *x, Spectrogram const *y, double beta);
 
 Spectrogram MatrixMultiply(Spectrogram const *a, Spectrogram const *b);
-Spectrogram SumSpectrograms(Spectrogram *a, unsigned int numSpectrograms, unsigned int axis);
+Spectrogram SumSpectrogramsAlongAxis(Spectrogram *a, unsigned int numSpectrograms, unsigned int axis);
+Spectrogram SumSpectrograms(Spectrogram *a, unsigned int numSpectrograms);
 
 Spectrogram
 ComputeActivations(Spectrogram const *input, unsigned int iterations, double beta, double error, Dictionary *dictionary);
