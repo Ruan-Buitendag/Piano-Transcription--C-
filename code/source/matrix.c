@@ -20,11 +20,16 @@ Matrix CreateMatrix(unsigned int nRows, unsigned int nCols) {
 }
 
 void DestroyMatrix(Matrix *matrix) {
+    if(matrix->array == NULL){
+        return;
+    }
+
     for (int i = 0; i < matrix->rows; i++) {
         free(matrix->array[i]);
     }
 
     free(matrix->array);
+    matrix->array = NULL;
 }
 
 Matrix MatrixMultiply(const Matrix *a, const Matrix *b) {
@@ -133,21 +138,4 @@ Matrix ShiftMatrix(const Matrix *matrix, unsigned int numShifts) {
     return shifted;
 }
 
-Matrix ComputeConvolution(const Matrix *matrix1, const Matrix *matrix2, unsigned int t) {
-    Matrix convolutions[t];
 
-    for (int i = 0; i < t; i++) {
-        Matrix shifted = ShiftMatrix(matrix2, i);
-        convolutions[i] = MatrixMultiply(matrix1, &shifted);
-
-        DestroyMatrix(&shifted);
-    }
-
-    Matrix conv_sum = SumMatricesAlongAxis(convolutions, t, 0);
-
-    for (int i = 0; i < t; i++) {
-        DestroyMatrix(&convolutions[i]);
-    }
-
-    return conv_sum;
-}

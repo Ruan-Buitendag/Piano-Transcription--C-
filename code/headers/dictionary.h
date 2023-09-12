@@ -10,7 +10,7 @@
 #include "hdf5.h"
 #include "spectrogram.h"
 
-typedef struct {
+typedef struct DictionaryStruct {
     hsize_t shape[3];
     double*** data;
 } Dictionary;
@@ -23,6 +23,7 @@ void PrintDictionary(Dictionary* dictionary);
 Dictionary HardFilterSpectrograms(Dictionary* dictionary, unsigned int numNewRows);
 
 Spectrogram GetSpectrogramFromDictionary(Dictionary const * dictionary, unsigned int axis, unsigned int index);
+Matrix GetMatrixFromDictionary(Dictionary const *dictionary, unsigned int axis, unsigned int index);
 
 void dictionaryTest();
 

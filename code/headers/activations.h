@@ -11,7 +11,9 @@
 
 double BetaDivergence(Matrix const *x, Matrix const *y, double beta);
 
-Spectrogram
+Matrix ComputeConvolution(Dictionary const *dictionary, Matrix const *matrix2, unsigned int t);
+
+Matrix
 ComputeActivations(Spectrogram const *input, unsigned int iterations, double beta, double error, Dictionary *dictionary);
 
 #endif //C_PIANO_TRANSCRIPTION_ACTIVATIONS_H

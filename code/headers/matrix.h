@@ -22,7 +22,6 @@ Matrix Transpose(Matrix const *matrix);
 void FillMatrix(Matrix* matrix, double value);
 void NormaliseMatrix(Matrix *matrix);
 Matrix ShiftMatrix(Matrix const *matrix, unsigned int numShifts);
-Matrix ComputeConvolution(Matrix const *matrix1, Matrix const *matrix2, unsigned int t);
 
 
 #endif //C_PIANO_TRANSCRIPTION_MATRIX_H

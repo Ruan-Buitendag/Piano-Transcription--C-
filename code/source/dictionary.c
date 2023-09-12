@@ -192,3 +192,39 @@ Spectrogram GetSpectrogramFromDictionary(Dictionary const *dictionary, unsigned 
     return noteSpectrogram;
 }
 
+
+Matrix GetMatrixFromDictionary(const Dictionary *dictionary, unsigned int axis, unsigned int index) {
+    Matrix slice;
+
+    if(axis == 0){
+        slice = CreateMatrix(dictionary->shape[1], dictionary->shape[2]);
+
+        for(int r = 0; r < slice.rows; r++){
+            for (int c = 0; c < slice.cols; c++) {
+                slice.array[r][c] = dictionary->data[index][r][c];
+            }
+        }
+    }
+    else if(axis == 1){
+//        Spectrogram noteSpectrogram = CreateSpectrogram(dictionary->shape[1], dictionary->shape[0]);
+        fprintf(stderr, "GetSpectrogramFromDictionary: axis == 1 not implemented yet\n");
+        exit(1);
+    }
+    else if(axis == 2){
+        slice = CreateMatrix(dictionary->shape[1], dictionary->shape[0]);
+
+        for(int r = 0; r < slice.rows; r++){
+            for (int c = 0; c < slice.cols; c++) {
+                slice.array[r][c] = dictionary->data[c][r][index];
+            }
+        }
+    }
+    else{
+        fprintf(stderr, "GetSpectrogramFromDictionary: axis must be 0, 1 or 2\n");
+        exit(1);
+    }
+
+
+    return slice;
+}
+

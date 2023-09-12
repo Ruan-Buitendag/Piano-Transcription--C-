@@ -32,8 +32,8 @@ double BetaDivergence(const Matrix *x, const Matrix *y, double beta) {
 }
 
 
-Spectrogram ComputeActivations(const Spectrogram *X, unsigned int iterations, double beta, double maximum_error,
-                               Dictionary *dictionary) {
+Matrix ComputeActivations(const Spectrogram *X, unsigned int iterations, double beta, double maximum_error,
+                          Dictionary *dictionary) {
 
     unsigned int r = dictionary->shape[2];
     unsigned int ncol = dictionary->shape[1];
@@ -48,9 +48,8 @@ Spectrogram ComputeActivations(const Spectrogram *X, unsigned int iterations, do
     }
 
 
-//    Spectrogram conved = ComputeConvolution(dictionary, &activations, T);
-    Matrix conved = ComputeConvolution()
-    double error_int = BetaDivergence(X, &conved, beta);
+    Matrix conved = ComputeConvolution(dictionary, &activations, T);
+    double error_int = BetaDivergence(&X->matrix, &conved, beta);
 
 //    TODO: denoms_cropped_for_end
 //    denom_all_col = np.sum(np.dot(W[t].T, np.ones([W.shape[1], ncol])) for t in
@@ -60,24 +59,24 @@ Spectrogram ComputeActivations(const Spectrogram *X, unsigned int iterations, do
 //    for j in range(1, T + 1):
 //    tab = np.sum(np.dot(W[i].T, np.ones(W[i].shape[0])) for i in range(j))
 //    denoms_cropped_for_end.append(tab)
-    Spectrogram convolutions[T];
+    Matrix convolutions[T];
 
-    Spectrogram ones = CreateSpectrogram(dictionary->shape[1], ncol);
-    FillSpectrogram(&ones, 1);
+    Matrix ones = CreateMatrix(dictionary->shape[1], ncol);
+    FillMatrix(&ones, 1);
 
     for (int t = 0; t < T; t++) {
         Spectrogram tspec = GetSpectrogramFromDictionary(dictionary, 0, t);
-        Spectrogram tspec_transposed = Transpose(&tspec);
+        Matrix tspec_transposed = Transpose(&tspec.matrix);
 
         convolutions[t] = MatrixMultiply(&tspec_transposed, &ones);
 
         DestroySpectrogram(&tspec);
-        DestroySpectrogram(&tspec_transposed);
+        DestroyMatrix(&tspec_transposed);
     }
 
-    DestroySpectrogram(&ones);
+    DestroyMatrix(&ones);
 
-    Spectrogram denom_all_col = SumSpectrograms(convolutions, T, 0);
+    Matrix denom_all_col = SumMatrices(convolutions, T);
 
 //    Spectrogram denoms_cropped_for_end[T];
 //
@@ -97,14 +96,14 @@ Spectrogram ComputeActivations(const Spectrogram *X, unsigned int iterations, do
 
 
     for (int i = 0; i < T; i++) {
-        DestroySpectrogram(&convolutions[i]);
+        DestroyMatrix(&convolutions[i]);
     }
 
     unsigned int iteration = 0;
     double obj, obj_prev = 0;
 
     while (iteration < iterations) {
-        Spectrogram A = ComputeConvolution(dictionary, &activations, T);
+        Matrix A = ComputeConvolution(dictionary, &activations, T);
 
         for (int i = 0; i < A.rows; i++) {
             for (int j = 0; j < A.cols; j++) {
@@ -114,11 +113,11 @@ Spectrogram ComputeActivations(const Spectrogram *X, unsigned int iterations, do
                     A.array[i][j] = 1e-8;
                 }
 
-                A.array[i][j] *= X->array[i][j];
+                A.array[i][j] *= X->matrix.array[i][j];
             }
         }
 
-        Spectrogram X_hadamard_A_padded = CreateSpectrogram(A.rows, A.cols + T);
+        Matrix X_hadamard_A_padded = CreateMatrix(A.rows, A.cols + T);
 
         for (int i = 0; i < A.rows; i++) {
             for (int j = 0; j < A.cols; j++) {
@@ -126,21 +125,22 @@ Spectrogram ComputeActivations(const Spectrogram *X, unsigned int iterations, do
             }
         }
 
-        Spectrogram num = CreateSpectrogram(r, A.cols);
+        Matrix num = CreateMatrix(r, A.cols);
 
-        DestroySpectrogram(&A);
+        DestroyMatrix(&A);
 
         for (int t = 0; t < T; t++) {
-            Spectrogram W_at_t = GetSpectrogramFromDictionary(dictionary, 0, t);
-            Spectrogram transposed = Transpose(&W_at_t);
-            DestroySpectrogram(&W_at_t);
+            Matrix W_at_t = GetMatrixFromDictionary(dictionary, 0, t);
+            Matrix transposed = Transpose(&W_at_t);
 
-            Spectrogram X_hadamard_A_windowed = CreateSpectrogram(X_hadamard_A_padded.rows, ncol);
+            DestroyMatrix(&W_at_t);
 
-            Spectrogram multiplied = MatrixMultiply(&transposed, &X_hadamard_A_windowed);
+            Matrix X_hadamard_A_windowed = CreateMatrix(X_hadamard_A_padded.rows, ncol);
 
-            DestroySpectrogram(&X_hadamard_A_windowed);
-            DestroySpectrogram(&transposed);
+            Matrix multiplied = MatrixMultiply(&transposed, &X_hadamard_A_windowed);
+
+            DestroyMatrix(&X_hadamard_A_windowed);
+            DestroyMatrix(&transposed);
 
             for (int i = 0; i < multiplied.rows; i++) {
                 for (int j = 0; j < multiplied.cols; j++) {
@@ -150,10 +150,10 @@ Spectrogram ComputeActivations(const Spectrogram *X, unsigned int iterations, do
 
 //            TODO: another few denom_cropped lines
 
-            DestroySpectrogram(&conved);
+            DestroyMatrix(&conved);
             conved = ComputeConvolution(dictionary, &activations, T);
 
-            obj = BetaDivergence(X, &conved, beta);
+            obj = BetaDivergence(&X->matrix, &conved, beta);
 
             if ((fabs(obj - obj_prev) / error_int) < maximum_error) {
                 printf("ComputeActivations: Converged sufficiently\n");
@@ -168,3 +168,24 @@ Spectrogram ComputeActivations(const Spectrogram *X, unsigned int iterations, do
     return activations;
 }
 
+Matrix ComputeConvolution(const Dictionary *dictionary, const Matrix *matrix2, unsigned int t) {
+    Matrix convolutions[t];
+
+    for (int i = 0; i < t; i++) {
+        Matrix tspec = GetMatrixFromDictionary(dictionary, 0, i);
+
+        Matrix shifted = ShiftMatrix(matrix2, i);
+        convolutions[i] = MatrixMultiply(&tspec, &shifted);
+
+        DestroyMatrix(&tspec);
+        DestroyMatrix(&shifted);
+    }
+
+    Matrix conv_sum = SumMatricesAlongAxis(convolutions, t, 0);
+
+    for (int i = 0; i < t; i++) {
+        DestroyMatrix(&convolutions[i]);
+    }
+
+    return conv_sum;
+}
