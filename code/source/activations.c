@@ -91,8 +91,44 @@ Spectrogram ComputeActivations(const Spectrogram *X, unsigned int iterations, do
 //    for j in range(1, T + 1):
 //    tab = np.sum(np.dot(W[i].T, np.ones(W[i].shape[0])) for i in range(j))
 //    denoms_cropped_for_end.append(tab)
+    Spectrogram convolutions[T];
+
+    for (int t = 0; t < T; t++) {
+        Spectrogram tspec = GetSpectrogramFromDictionary(dictionary, 0, t);
+        Spectrogram tspec_transposed = Transpose(&tspec);
+
+        Spectrogram ones = CreateSpectrogram(dictionary->shape[1], ncol);
+        FillSpectrogram(&ones, 1);
+
+        convolutions[t] = MatrixMultiply(&tspec_transposed, &ones);
+
+        DestroySpectrogram(&tspec);
+        DestroySpectrogram(&tspec_transposed);
+        DestroySpectrogram(&ones);
+    }
+
+    Spectrogram denom_all_col = SumSpectrograms(convolutions, T, 0);
+
+//    Spectrogram denoms_cropped_for_end[T];
+//
+//    for (int i = 0; i < T; i++) {
+//        Spectrogram tspec = GetSpectrogramFromDictionary(dictionary, 0, i);
+//        Spectrogram tspec_transposed = Transpose(&tspec);
+//
+//        Spectrogram ones = CreateSpectrogram(dictionary->shape[0], ncol);
+//        FillSpectrogram(&ones, 1);
+//
+//        convolutions[i] = MatrixMultiply(&tspec_transposed, &ones);
+//
+//        DestroySpectrogram(&tspec);
+//        DestroySpectrogram(&tspec_transposed);
+//        DestroySpectrogram(&ones);
+//    }
 
 
+    for(int i = 0; i < T; i++){
+        DestroySpectrogram(&convolutions[i]);
+    }
 
     unsigned int iteration = 0;
     double obj, obj_prev = 0;

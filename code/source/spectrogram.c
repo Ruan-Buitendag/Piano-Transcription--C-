@@ -114,3 +114,11 @@ void DestroySpectrogram(Spectrogram *spectrogram) {
 
     free(spectrogram->array);
 }
+
+void FillSpectrogram(Spectrogram *spectrogram, double value) {
+    for (int i = 0; i < spectrogram->rows; i++) {
+        for (int j = 0; j < spectrogram->cols; j++) {
+            spectrogram->array[i][j] = value;
+        }
+    }
+}
