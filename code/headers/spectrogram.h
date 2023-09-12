@@ -12,15 +12,14 @@ typedef struct {
 } Spectrogram;
 
 Spectrogram CreateSpectrogram(unsigned int nRows, unsigned int nCols);
+void DestroySpectrogram(Spectrogram *spectrogram);
 
-Spectrogram HardFilterSpectrogram(Spectrogram *spectrogram, unsigned int numNewRows);
-
+Spectrogram HardFilterSpectrogram(Spectrogram const *spectrogram, unsigned int numNewRows);
 void NormaliseSpectrogram(Spectrogram *spectrogram);
+Spectrogram ShiftSpectrogram(Spectrogram const *spectrogram, unsigned int numShifts);
+Spectrogram Transpose(Spectrogram const *spectrogram);
 
 void SaveSpectrogramToCSV(const char *filename, Spectrogram *spectrogram);
-
-Spectrogram ShiftSpectrogram(Spectrogram * spectrogram, unsigned int numShifts);x
-
 
 void spectrogramTest();
 

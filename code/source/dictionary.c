@@ -157,7 +157,7 @@ Dictionary HardFilterSpectrograms(Dictionary *dictionary, unsigned int numNewRow
     return filtered;
 }
 
-Spectrogram GetSpectrogramFromDictionary(Dictionary *dictionary, unsigned int axis, unsigned int index){
+Spectrogram GetSpectrogramFromDictionary(Dictionary const *dictionary, unsigned int axis, unsigned int index){
     Spectrogram noteSpectrogram;
 
     if(axis == 0){

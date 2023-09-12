@@ -8,7 +8,8 @@
 
 DynamicArray CreateDynamicArray(unsigned long size) {
     DynamicArray dynamicArray;
-    dynamicArray.array = (double *) malloc(size * sizeof(double));
+//    dynamicArray.array = (double *) malloc(size * sizeof(double));
+    dynamicArray.array = (double *) calloc(size, sizeof(double));
 
     if (dynamicArray.array == NULL) {
         fprintf(stderr, "Error allocating memory. Exiting...\n");
@@ -56,7 +57,7 @@ void CopyDynamicArray(DynamicArray *dest, DynamicArray *src) {
 }
 
 DynamicArray AppendDynamicArray(DynamicArray *first, DynamicArray *second) {
-    int newSize = first->size + second->size;
+    unsigned int newSize = first->size + second->size;
 
     // Allocate memory for the new array
     DynamicArray newArray = CreateDynamicArray(newSize);

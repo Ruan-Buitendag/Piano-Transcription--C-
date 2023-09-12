@@ -11,7 +11,8 @@ Spectrogram CreateSpectrogram(unsigned int nRows, unsigned int nCols) {
     spectrogram.array = (double **) malloc(nRows * sizeof(double *));
 
     for (int i = 0; i < nRows; i++) {
-        spectrogram.array[i] = (double *) malloc(nCols * sizeof(double));
+//        spectrogram.array[i] = (double *) malloc(nCols * sizeof(double));
+        spectrogram.array[i] = (double *) calloc(nCols, sizeof(double));
     }
 
     spectrogram.rows = nRows;
@@ -39,7 +40,7 @@ void NormaliseSpectrogram(Spectrogram *spectrogram) {
     }
 }
 
-Spectrogram HardFilterSpectrogram(Spectrogram* spectrogram, unsigned int numNewRows) {
+Spectrogram HardFilterSpectrogram(Spectrogram const * spectrogram, unsigned int numNewRows) {
     Spectrogram filtered = CreateSpectrogram(numNewRows, spectrogram->cols);
 
     for(int r = 0; r < numNewRows; r++){
@@ -72,7 +73,7 @@ void SaveSpectrogramToCSV(const char *filename, Spectrogram* spectrogram) {
     fclose(file);
 }
 
-Spectrogram ShiftSpectrogram(Spectrogram *spectrogram, unsigned int numShifts) {
+Spectrogram ShiftSpectrogram(Spectrogram const *spectrogram, unsigned int numShifts) {
     Spectrogram shifted = CreateSpectrogram(spectrogram->rows, spectrogram->cols);
 
     for (int i = 0; i < spectrogram->rows; i++) {
@@ -92,4 +93,24 @@ Spectrogram ShiftSpectrogram(Spectrogram *spectrogram, unsigned int numShifts) {
 
     return shifted;
 
+}
+
+Spectrogram Transpose(const Spectrogram *spectrogram) {
+    Spectrogram transposed = CreateSpectrogram(spectrogram->cols, spectrogram->rows);
+
+    for (int i = 0; i < spectrogram->rows; i++) {
+        for (int j = 0; j < spectrogram->cols; j++) {
+            transposed.array[j][i] = spectrogram->array[i][j];
+        }
+    }
+
+    return transposed;
+}
+
+void DestroySpectrogram(Spectrogram *spectrogram) {
+    for (int i = 0; i < spectrogram->rows; i++) {
+        free(spectrogram->array[i]);
+    }
+
+    free(spectrogram->array);
 }

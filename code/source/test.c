@@ -12,7 +12,8 @@ int** shift(int** H, int rows, int cols, int t) {
     int** H_shift = (int**)malloc(rows * sizeof(int*));
 
     for (int i = 0; i < rows; i++) {
-        H_shift[i] = (int*)malloc(cols * sizeof(int));
+        H_shift[i] = (int*)calloc(cols , sizeof(int));
+//        H_shift[i] = (int*)malloc(cols * sizeof(int));
     }
 
     for (int i = 0; i < rows; i++) {
@@ -20,13 +21,6 @@ int** shift(int** H, int rows, int cols, int t) {
             if (j + t < cols) {
                 H_shift[i][j + t] = H[i][j];
             }
-        }
-    }
-
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < t; j++) {
-            H_shift[i][j ] = 0;
-
         }
     }
 
@@ -40,7 +34,7 @@ int main() {
     // Initialize matrix H with example values
     int** H = (int**)malloc(rows * sizeof(int*));
     for (int i = 0; i < rows; i++) {
-        H[i] = (int*)malloc(cols * sizeof(int));
+        H[i] = (int*)calloc(cols , sizeof(int));
     }
 
     // Populate H with example values (you can replace these)
