@@ -5,21 +5,18 @@
 #ifndef C_PIANO_TRANSCRIPTION_SPECTROGRAM_H
 #define C_PIANO_TRANSCRIPTION_SPECTROGRAM_H
 
-typedef struct {
-    double **array;
-    unsigned int rows;
-    unsigned int cols;
+#include "matrix.h"
+
+typedef struct SpectrogramStruct {
+    Matrix matrix;
+    double timeStep;
+    double frequencyStep;
 } Spectrogram;
 
 Spectrogram CreateSpectrogram(unsigned int nRows, unsigned int nCols);
 void DestroySpectrogram(Spectrogram *spectrogram);
 
-void FillSpectrogram(Spectrogram* spectrogram, double value);
-
 Spectrogram HardFilterSpectrogram(Spectrogram const *spectrogram, unsigned int numNewRows);
-void NormaliseSpectrogram(Spectrogram *spectrogram);
-Spectrogram ShiftSpectrogram(Spectrogram const *spectrogram, unsigned int numShifts);
-Spectrogram Transpose(Spectrogram const *spectrogram);
 
 void SaveSpectrogramToCSV(const char *filename, Spectrogram *spectrogram);
 

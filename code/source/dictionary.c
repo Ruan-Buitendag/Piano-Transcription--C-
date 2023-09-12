@@ -163,22 +163,23 @@ Spectrogram GetSpectrogramFromDictionary(Dictionary const *dictionary, unsigned 
     if(axis == 0){
         noteSpectrogram = CreateSpectrogram(dictionary->shape[1], dictionary->shape[2]);
 
-        for(int r = 0; r < noteSpectrogram.rows; r++){
-            for (int c = 0; c < noteSpectrogram.cols; c++) {
-                noteSpectrogram.array[r][c] = dictionary->data[index][r][c];
+        for(int r = 0; r < noteSpectrogram.matrix.rows; r++){
+            for (int c = 0; c < noteSpectrogram.matrix.cols; c++) {
+                noteSpectrogram.matrix.array[r][c] = dictionary->data[index][r][c];
             }
         }
     }
     else if(axis == 1){
 //        Spectrogram noteSpectrogram = CreateSpectrogram(dictionary->shape[1], dictionary->shape[0]);
         fprintf(stderr, "GetSpectrogramFromDictionary: axis == 1 not implemented yet\n");
+        exit(1);
     }
     else if(axis == 2){
         noteSpectrogram = CreateSpectrogram(dictionary->shape[1], dictionary->shape[0]);
 
-        for(int r = 0; r < noteSpectrogram.rows; r++){
-            for (int c = 0; c < noteSpectrogram.cols; c++) {
-                noteSpectrogram.array[r][c] = dictionary->data[c][r][index];
+        for(int r = 0; r < noteSpectrogram.matrix.rows; r++){
+            for (int c = 0; c < noteSpectrogram.matrix.cols; c++) {
+                noteSpectrogram.matrix.array[r][c] = dictionary->data[c][r][index];
             }
         }
     }

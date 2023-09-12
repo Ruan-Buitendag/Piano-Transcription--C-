@@ -10,7 +10,7 @@
 #include "stdlib.h"
 
 // WAVE file header format
-typedef struct {
+typedef struct WavHeaderStruct{
     unsigned char riff[4];						// RIFF string
     unsigned int overall_size	;				// overall size of file in bytes
     unsigned char wave[4];						// WAVE string
@@ -27,7 +27,7 @@ typedef struct {
     unsigned long num_samples;
 } WavHeader;
 
-typedef struct{
+typedef struct WavFileStruct{
     WavHeader header;
     DynamicArray channels[2];
 } WavFile;

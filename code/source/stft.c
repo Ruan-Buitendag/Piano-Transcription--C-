@@ -70,7 +70,7 @@ Spectrogram STFT(DynamicArray *x, int windowSize, int hopSize, int fftSize) {
         rfft(xWindowed.array, fftSize, XWindowed.array);
 
         for (int j = 0; j < XWindowed.size ; j++) {
-            X.array[j][i] = fabs(XWindowed.array[j]) / sum;
+            X.matrix.array[j][i] = fabs(XWindowed.array[j]) / sum;
         }
 
         //    print the contents of xWindowed

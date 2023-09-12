@@ -6,8 +6,8 @@
 #include "math.h"
 #include "stdio.h"
 
-double BetaDivergence(const Spectrogram *x, const Spectrogram *y, double beta) {
-    Spectrogram d = CreateSpectrogram(x->rows, x->cols);
+double BetaDivergence(const Matrix *x, const Matrix *y, double beta) {
+    Matrix d = CreateMatrix(x->rows, x->cols);
 
     double sum = 0;
 
@@ -31,39 +31,6 @@ double BetaDivergence(const Spectrogram *x, const Spectrogram *y, double beta) {
 
 }
 
-Spectrogram MatrixMultiply(const Spectrogram *a, const Spectrogram *b) {
-    Spectrogram result = CreateSpectrogram(a->rows, b->cols);
-
-    for (int i = 0; i < a->rows; i++) {
-        for (int j = 0; j < b->cols; j++) {
-            result.array[i][j] = 0;
-            for (int k = 0; k < a->cols; k++) {
-                result.array[i][j] += a->array[i][k] * b->array[k][j];
-            }
-        }
-    }
-
-    return result;
-}
-
-// TODO: optimisation is probably possible here
-Spectrogram SumSpectrogramsAlongAxis(Spectrogram *a, unsigned int numSpectrograms, unsigned int axis) {
-    Spectrogram result = CreateSpectrogram(a[0].rows, a[0].cols);
-
-    for (int r = 0; r < result.rows; r++) {
-        for (int c = 0; c < result.cols; c++) {
-            for (int i = 0; i < numSpectrograms; i++) {
-                if (axis == 0) {
-                    result.array[r][c] += a[i].array[r][c];
-                } else if (axis == 1) {
-                    result.array[r][c] += a[i].array[c][r];
-                }
-            }
-        }
-    }
-
-    return result;
-}
 
 Spectrogram ComputeActivations(const Spectrogram *X, unsigned int iterations, double beta, double maximum_error,
                                Dictionary *dictionary) {
@@ -72,7 +39,7 @@ Spectrogram ComputeActivations(const Spectrogram *X, unsigned int iterations, do
     unsigned int ncol = dictionary->shape[1];
     unsigned int T = dictionary->shape[0];
 
-    Spectrogram activations = CreateSpectrogram(dictionary->shape[2], dictionary->shape[1]);
+    Matrix activations = CreateMatrix(dictionary->shape[2], dictionary->shape[1]);
 
     double gamma = 1;
 
@@ -80,7 +47,9 @@ Spectrogram ComputeActivations(const Spectrogram *X, unsigned int iterations, do
         fprintf(stderr, "ComputeActivations: beta != 1 not implemented yet\n");
     }
 
-    Spectrogram conved = ComputeConvolution(dictionary, &activations, T);
+
+//    Spectrogram conved = ComputeConvolution(dictionary, &activations, T);
+    Matrix conved = ComputeConvolution()
     double error_int = BetaDivergence(X, &conved, beta);
 
 //    TODO: denoms_cropped_for_end
@@ -198,41 +167,4 @@ Spectrogram ComputeActivations(const Spectrogram *X, unsigned int iterations, do
 
     return activations;
 }
-
-Spectrogram
-ComputeConvolution(Dictionary const *dictionary, Spectrogram const *activations, unsigned int t) {
-    Spectrogram convolutions[t];
-
-    for (int i = 0; i < t; i++) {
-        Spectrogram tspec = GetSpectrogramFromDictionary(dictionary, 0, i);
-        Spectrogram shifted = ShiftSpectrogram(activations, i);
-        convolutions[i] = MatrixMultiply(&tspec, &shifted);
-
-        DestroySpectrogram(&tspec);
-        DestroySpectrogram(&shifted);
-    }
-
-    Spectrogram conv_sum = SumSpectrogramsAlongAxis(convolutions, t, 0);
-
-    for (int i = 0; i < t; i++) {
-        DestroySpectrogram(&convolutions[i]);
-    }
-
-    return conv_sum;
-}
-
-Spectrogram SumSpectrograms(Spectrogram *a, unsigned int numSpectrograms) {
-    Spectrogram result = CreateSpectrogram(a[0].rows, a[0].cols);
-
-    for(int i = 0; i < numSpectrograms; i++) {
-        for(int j = 0; j < a[i].rows; j++) {
-            for(int k = 0; k < a[i].cols; k++) {
-                result.array[j][k] += a[i].array[j][k];
-            }
-        }
-    }
-
-    return result;
-}
-
 
