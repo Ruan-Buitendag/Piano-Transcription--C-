@@ -52,8 +52,6 @@ void CopyDynamicArray(DynamicArray *dest, DynamicArray *src) {
     for (int i = 0; i < src->size; i++) {
         dest->array[i] = src->array[i];
     }
-
-    int a = 0;
 }
 
 DynamicArray AppendDynamicArray(DynamicArray *first, DynamicArray *second) {

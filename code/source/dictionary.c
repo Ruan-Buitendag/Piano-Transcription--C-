@@ -140,11 +140,12 @@ void dictionaryTest() {
 
 }
 
+// TODO: this function, remember dict dims are (10, 4097, 88)
 Dictionary HardFilterSpectrograms(Dictionary *dictionary, unsigned int numNewRows) {
     Dictionary filtered;
 
 //    dictionary->shape
-
+//
 //    Spectrogram filtered = CreateSpectrogram(numNewRows, spectrogram->cols);
 //
 //    for(int r = 0; r < numNewRows; r++){

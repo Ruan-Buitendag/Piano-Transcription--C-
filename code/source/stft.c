@@ -11,8 +11,6 @@
 #include "stdlib.h"
 
 Spectrogram STFT(DynamicArray *x, int windowSize, int hopSize, int fftSize) {
-//    TODO: redo padding sodat dit minder stupid is noudat jy calloc gebruik
-
     DynamicArray xCopy = CreateDynamicArray(x->size + 2 * windowSize);
 
     CopyDynamicArray(&xCopy, x);
@@ -34,7 +32,6 @@ Spectrogram STFT(DynamicArray *x, int windowSize, int hopSize, int fftSize) {
     }
 
     DynamicArray paddingForWindowing = CreateDynamicArray(nPad);
-    FillDynamicArray(&paddingForWindowing, 0);
 
     DynamicArray finalPaddedSignal = AppendDynamicArray(&paddedSignal, &paddingForWindowing);
 
@@ -45,9 +42,9 @@ Spectrogram STFT(DynamicArray *x, int windowSize, int hopSize, int fftSize) {
 
     double sum = Sum(&window);
 
-    unsigned int N = windowSize;
-    unsigned int L = finalPaddedSignal.size;
-    unsigned int M = ((L - N) / hopSize) + 1;
+    int N = windowSize;
+    int L = (int) finalPaddedSignal.size;
+    int M = ((L - N) / hopSize) + 1;
 
     DestroyDynamicArray(&xCopy);
 

@@ -78,8 +78,9 @@ Matrix ComputeActivations(const Spectrogram *X, unsigned int iterations, double 
 
     Matrix denom_all_col = SumMatrices(convolutions, T);
 
-//    Spectrogram denoms_cropped_for_end[T];
-//
+//    TODO: denoms_cropped_for_end
+    Matrix denoms_cropped_for_end = CreateMatrix(1, T + 1);
+
 //    for (int i = 0; i < T; i++) {
 //        Spectrogram tspec = GetSpectrogramFromDictionary(dictionary, 0, i);
 //        Spectrogram tspec_transposed = Transpose(&tspec);
@@ -147,23 +148,40 @@ Matrix ComputeActivations(const Spectrogram *X, unsigned int iterations, double 
                     num.array[i][j] += multiplied.array[i][j];
                 }
             }
-
-//            TODO: another few denom_cropped lines
-
-            DestroyMatrix(&conved);
-            conved = ComputeConvolution(dictionary, &activations, T);
-
-            obj = BetaDivergence(&X->matrix, &conved, beta);
-
-            if ((fabs(obj - obj_prev) / error_int) < maximum_error) {
-                printf("ComputeActivations: Converged sufficiently\n");
-                break;
-            }
-
-            obj_prev = obj;
-            iteration++;
         }
+
+
+        for(int row = 0; row < activations.rows; row++) {
+            for (int c = 0; c < ncol - T; c++) {
+                activations.array[row][c] *= pow((num.array[row][c] / denom_all_col.array[row][c]), gamma);
+            }
+        }
+
+        for(int row = 0; row < activations.rows; row++) {
+            for (int c = (int) (ncol - T); c < ncol; c++) {
+                activations.array[row][c] *= pow((num.array[row][c] / denoms_cropped_for_end.array[row][c]), gamma);
+            }
+        }
+
+        DestroyMatrix(&num);
+        DestroyMatrix(&X_hadamard_A_padded);
+        DestroyMatrix(&denom_all_col);
+        DestroyMatrix(&denoms_cropped_for_end);
+
+        DestroyMatrix(&conved);
+        conved = ComputeConvolution(dictionary, &activations, T);
+
+        obj = BetaDivergence(&X->matrix, &conved, beta);
+
+        if ((fabs(obj - obj_prev) / error_int) < maximum_error) {
+            printf("ComputeActivations: Converged sufficiently\n");
+            break;
+        }
+
+        obj_prev = obj;
+        iteration++;
     }
+
 
     return activations;
 }
