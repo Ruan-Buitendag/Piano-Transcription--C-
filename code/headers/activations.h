@@ -16,6 +16,6 @@ Spectrogram SumSpectrograms(Spectrogram *a, unsigned int numSpectrograms, unsign
 Spectrogram
 ComputeActivations(Spectrogram const *input, unsigned int iterations, double beta, double error, Dictionary *dictionary);
 Spectrogram
-ComputeConvolution(Dictionary const *dictionary, Spectrogram const *activations, double beta, unsigned int t);
+ComputeConvolution(Dictionary const *dictionary, Spectrogram const *activations, unsigned int t);
 
 #endif //C_PIANO_TRANSCRIPTION_ACTIVATIONS_H
