@@ -10,13 +10,21 @@
 #include <complex.h>
 #include "stdlib.h"
 
-Spectrogram STFT(DynamicArray *x, int windowSize, int hopSize, int fftSize) {
-    DynamicArray xCopy = CreateDynamicArray(x->size + 2 * windowSize);
+Spectrogram STFT(DynamicArray *x, int windowSize, int hopSize, int fftSize, int time_limit, int sampling_rate) {
+    DynamicArray timelimited = CreateDynamicArray(time_limit * sampling_rate);
 
-    CopyDynamicArray(&xCopy, x);
+    for (int i = 0; i < time_limit * sampling_rate; i++) {
+        timelimited.array[i] = x->array[i];
+    }
+
+    DynamicArray xCopy = CreateDynamicArray(timelimited.size + 2 * windowSize);
+
+    CopyDynamicArray(&xCopy, &timelimited);
+
+    DestroyDynamicArray(&timelimited);
 
     DynamicArray padding = CreateDynamicArray(windowSize / 2);
-    FillDynamicArray(&padding, 0);
+//    FillDynamicArray(&padding, 0);
 
     DynamicArray beginningPaddedSignal = AppendDynamicArray(&padding, &xCopy);
 
@@ -49,6 +57,8 @@ Spectrogram STFT(DynamicArray *x, int windowSize, int hopSize, int fftSize) {
     DestroyDynamicArray(&xCopy);
 
     Spectrogram X = CreateSpectrogram(fftSize / 2 + 1, M);
+    X.timeStep = (double) hopSize / sampling_rate;
+    X.frequencyStep = (double) sampling_rate / fftSize;
 
     for (int i = 0; i < M; i++) {
         DynamicArray xWindowed = CreateDynamicArray(fftSize);
@@ -56,11 +66,6 @@ Spectrogram STFT(DynamicArray *x, int windowSize, int hopSize, int fftSize) {
         for (int j = 0; j < windowSize; j++) {
             xWindowed.array[j] = finalPaddedSignal.array[i * hopSize + j] * window.array[j];
         }
-
-        for(int k = windowSize; k < fftSize; k++) {
-            xWindowed.array[k] = 0;
-        }
-
 
         DynamicArray XWindowed = CreateDynamicArray(fftSize / 2);
 
@@ -70,12 +75,11 @@ Spectrogram STFT(DynamicArray *x, int windowSize, int hopSize, int fftSize) {
             X.matrix.array[j][i] = fabs(XWindowed.array[j]) / sum;
         }
 
-        //    print the contents of xWindowed
         DestroyDynamicArray(&xWindowed);
         DestroyDynamicArray(&XWindowed);
     }
 
-    SaveSpectrogramToCSV("spectrogram.csv", &X);
+    NormalizeSpectrogram(&X);
 
     return X;
 }
@@ -149,35 +153,16 @@ void rfft(const double *x, int N, double *result) {
 
 void stftTest() {
 
-    int sampleRate = 5000;  // Sample rate in Hz
-    double frequency = 440.0;  // Frequency of the sawtooth wave in Hz
-    double amplitude = 1;  // Amplitude of the wave
+//    array 1 to 100000
+    DynamicArray a = CreateDynamicArray(100000);
 
-    int duration = 1;  // Duration of the waveform in seconds
-    int numSamples = sampleRate * duration;
-
-    double signal[numSamples];
-
-    for (int i = 0; i < numSamples; i++) {
-        double t = (double) i / sampleRate;
-        double value = 2.0 * (t * frequency - floor(0.5 + t * frequency)); // Sawtooth wave formula
-
-        // Scale the value by the amplitude
-        value *= amplitude;
-
-        // Output the sample (assuming 16-bit signed PCM)
-        double sample = value;
-
-        signal[i] = sample;
+    for (int i = 0; i < 100000; i++) {
+        a.array[i] = i + 1;
     }
 
-    double fftr[1024];
+    Spectrogram spec = STFT(&a, 4096, 882, 8192, 1, 44100);
 
-    rfft(signal, 2048, fftr);
-
-    for (int i = 0; i < 1024; i++) {
-        printf("%f\n", fftr[i]);
-    }
+    SaveSpectrogramToCSV("STFTTest.csv", &spec);
 }
 
 

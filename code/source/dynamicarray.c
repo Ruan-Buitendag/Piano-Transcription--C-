@@ -27,9 +27,9 @@ void DestroyDynamicArray(DynamicArray *dynamicArray) {
         exit(1);
     }
 
-    printf("Destroying dynamic array...\n");
+//    printf("Destroying dynamic array...\n");
     free(dynamicArray->array);
-    printf("Dynamic array destroyed.\n");
+//    printf("Dynamic array destroyed.\n");
     dynamicArray->array = NULL;
     dynamicArray->size = 0;
 }
@@ -111,6 +111,22 @@ void dynamicArrayTest() {
     }
 
     DestroyDynamicArray(&aa);
+}
+
+void SaveArrayToCSV(char *filename, DynamicArray *dynamicArray) {
+    FILE *fp = fopen(filename, "w");
+
+    if (fp == NULL) {
+        fprintf(stderr, "Error opening file %s. Exiting...\n", filename);
+        exit(1);
+    }
+
+    for (int i = 0; i < dynamicArray->size; i++) {
+        fprintf(fp, "%.8f\n", dynamicArray->array[i]);
+    }
+
+    fclose(fp);
+
 }
 
 

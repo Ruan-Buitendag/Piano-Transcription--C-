@@ -66,5 +66,10 @@ int main() {
     free(H);
     free(H_shifted);
 
+    printf("Done \n");
+
+
+
+
     return 0;
 }

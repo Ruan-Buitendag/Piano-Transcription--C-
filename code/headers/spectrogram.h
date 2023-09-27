@@ -17,6 +17,7 @@ Spectrogram CreateSpectrogram(unsigned int nRows, unsigned int nCols);
 void DestroySpectrogram(Spectrogram *spectrogram);
 
 Spectrogram HardFilterSpectrogram(Spectrogram const *spectrogram, unsigned int numNewRows);
+void NormalizeSpectrogram(Spectrogram *spectrogram);
 
 void SaveSpectrogramToCSV(const char *filename, Spectrogram *spectrogram);
 

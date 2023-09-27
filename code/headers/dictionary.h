@@ -19,8 +19,8 @@ void LoadDictionary(Dictionary *dictionary, char *filename);
 void AllocateDictionaryMemory(Dictionary* dictionary);
 void PrintDictionary(Dictionary* dictionary);
 
-// TODO: this function, remember dict dims are (10, 4097, 88)
 Dictionary HardFilterSpectrograms(Dictionary* dictionary, unsigned int numNewRows);
+void NormaliseDictionary(Dictionary* dictionary);
 
 Spectrogram GetSpectrogramFromDictionary(Dictionary const * dictionary, unsigned int axis, unsigned int index);
 Matrix GetMatrixFromDictionary(Dictionary const *dictionary, unsigned int axis, unsigned int index);

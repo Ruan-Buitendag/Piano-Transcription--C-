@@ -4,6 +4,8 @@
 
 #include "matrix.h"
 #include "stdlib.h"
+#include "stdio.h"
+
 
 Matrix CreateMatrix(unsigned int nRows, unsigned int nCols) {
     Matrix matrix;
@@ -136,6 +138,27 @@ Matrix ShiftMatrix(const Matrix *matrix, unsigned int numShifts) {
     }
 
     return shifted;
+}
+
+void SaveMatrixToCSV(const char *filename, Matrix const* matrix) {
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        fprintf(stderr, "SaveMatrixToCSV: Error opening file");
+        return;
+    }
+
+    // Write the array data to the CSV file
+    for (int i = 0; i < matrix->rows; i++) {
+        for (int j = 0; j < matrix->cols; j++) {
+            fprintf(file, "%.6f", matrix->array[i][j]); // Adjust the format specifier as needed
+            if (j < matrix->cols - 1) {
+                fprintf(file, ",");
+            }
+        }
+        fprintf(file, "\n");
+    }
+
+    fclose(file);
 }
 
 

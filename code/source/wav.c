@@ -51,7 +51,8 @@ WavFile ReadWav(const char *filename) {
 
 //    DynamicArray wav_buffer = CreateDynamicArray(num_samples);
 
-    WavFile wav_buffer = CreateWavFile(header.num_samples / header.channels, header);
+    WavFile wav_buffer = CreateWavFile(header.num_samples, header);
+//    WavFile wav_buffer = CreateWavFile(header.num_samples / header.channels, header);
 
     unsigned int size_of_each_sample = (header.channels * header.bits_per_sample) / 8;
 //    printf("Size of each sample:%ld bytes\n", size_of_each_sample);
@@ -97,7 +98,7 @@ WavFile ReadWav(const char *filename) {
 
 //                printf("\n\nValid range for data values : %ld to %ld \n", low_limit, high_limit);
             for (i = 1; i <= header.num_samples; i++) {
-                printf("==========Sample %ld / %ld=============\n", i, header.num_samples);
+//                printf("==========Sample %ld / %ld=============\n", i, header.num_samples);
                 unsigned long read = fread(data_buffer, sizeof(data_buffer), 1, ptr);
                 if (read == 1) {
 
@@ -106,7 +107,7 @@ WavFile ReadWav(const char *filename) {
                     int data_in_channel = 0;
                     int offset = 0; // move the offset for every iteration in the loop below
                     for (xchannels = 0; xchannels < header.channels; xchannels++) {
-                        printf("Channel#%d : ", (xchannels + 1));
+//                        printf("Channel#%d : ", (xchannels + 1));
                         // convert data from little endian to big endian based on bytes in each channel sample
                         if (bytes_in_each_channel == 4) {
                             data_in_channel = (data_buffer[offset] & 0x00ff) |
@@ -121,24 +122,16 @@ WavFile ReadWav(const char *filename) {
                             data_in_channel -= 128; //in wave, 8-bit are unsigned, so shifting to signed
                         }
 
-//                        offset += bytes_in_each_channel;
-                        printf("%d ", data_in_channel);
+                        offset += bytes_in_each_channel;
+//                        printf("%d ", data_in_channel);
 
                         // check if value was in range
                         if (data_in_channel < low_limit || data_in_channel > high_limit)
                             fprintf(stderr, "Reading wav: value out of range\n");
 
-                            printf(" | ");
-
-//                        if (xchannels == 0)
-//                            wav_buffer.channels[0].array[i / 2] = data_in_channel;
-//                        else if (xchannels == 1)
-//                            wav_buffer.channels[1].array[i / 2 + 1] = data_in_channel;
-
-//                        printf("%lu\n", i / (xchannels+1) + xchannels);
-
-                        wav_buffer.channels[xchannels].array[i/(header.channels+1) + xchannels] = data_in_channel;
-
+//
+//                        wav_buffer.channels[xchannels].array[i/(header.channels+1) + xchannels] = data_in_channel;
+                        wav_buffer.channels[xchannels].array[i] = (double)data_in_channel/high_limit;
                     }
 
 //                        printf("\n");
@@ -306,6 +299,7 @@ DynamicArray StereoToMono(WavFile *wavFile, const char *process) {
             mono.array[i] = wavFile->channels[0].array[i] + wavFile->channels[1].array[i];
         }else if(strcmp(process, "average") == 0){
             mono.array[i] = (wavFile->channels[0].array[i] + wavFile->channels[1].array[i])/2;
+//            mono.array[i] = (wavFile->channels[0].array[i] + wavFile->channels[1].array[i])/4;
         } else{
             mono.array[i] = wavFile->channels[atoi(process)].array[i];
         }

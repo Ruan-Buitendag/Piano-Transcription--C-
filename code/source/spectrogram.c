@@ -51,3 +51,21 @@ void DestroySpectrogram(Spectrogram *spectrogram) {
     DestroyMatrix(&spectrogram->matrix);
 }
 
+void NormalizeSpectrogram(Spectrogram *spectrogram) {
+    double max = 0;
+
+    for(int r = 0; r < spectrogram->matrix.rows; r++){
+        for(int c = 0; c < spectrogram->matrix.cols; c++){
+            if(spectrogram->matrix.array[r][c] > max){
+                max = spectrogram->matrix.array[r][c];
+            }
+        }
+    }
+
+    for(int r = 0; r < spectrogram->matrix.rows; r++){
+        for(int c = 0; c < spectrogram->matrix.cols; c++){
+            spectrogram->matrix.array[r][c] /= max;
+        }
+    }
+}
+

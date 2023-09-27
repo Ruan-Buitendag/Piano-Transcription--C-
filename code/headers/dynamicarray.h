@@ -22,6 +22,8 @@ double Sum(DynamicArray const *dynamicArray);
 
 void PrintDynamicArray(DynamicArray const *dynamicArray);
 
+void SaveArrayToCSV(char *filename, DynamicArray *dynamicArray);
+
 
 void dynamicArrayTest();
 

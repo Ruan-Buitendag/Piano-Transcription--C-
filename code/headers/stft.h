@@ -9,7 +9,7 @@
 #include "spectrogram.h"
 #include "complex.h"
 
-Spectrogram STFT(DynamicArray *x, int windowSize, int hopSize, int fftSize);
+Spectrogram STFT(DynamicArray *x, int windowSize, int hopSize, int fftSize, int time_limit, int sampling_rate);
 
 DynamicArray HanningWindow(int windowSize);
 

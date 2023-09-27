@@ -144,47 +144,47 @@ void dictionaryTest() {
 Dictionary HardFilterSpectrograms(Dictionary *dictionary, unsigned int numNewRows) {
     Dictionary filtered;
 
-//    dictionary->shape
-//
-//    Spectrogram filtered = CreateSpectrogram(numNewRows, spectrogram->cols);
-//
-//    for(int r = 0; r < numNewRows; r++){
-//        for(int c = 0; c < spectrogram->cols; c++){
-//            filtered.array[r][c] = spectrogram->array[r][c];
-//        }
-//    }
+    filtered.shape[0] = dictionary->shape[0];
+    filtered.shape[1] = numNewRows;
+    filtered.shape[2] = dictionary->shape[2];
 
+    AllocateDictionaryMemory(&filtered);
+
+    for (int i = 0; i < filtered.shape[0]; i++) {
+        for (int j = 0; j < filtered.shape[1]; j++) {
+            for (int k = 0; k < filtered.shape[2]; k++) {
+                filtered.data[i][j][k] = dictionary->data[i][j][k];
+            }
+        }
+    }
 
     return filtered;
 }
 
-Spectrogram GetSpectrogramFromDictionary(Dictionary const *dictionary, unsigned int axis, unsigned int index){
+Spectrogram GetSpectrogramFromDictionary(Dictionary const *dictionary, unsigned int axis, unsigned int index) {
     Spectrogram noteSpectrogram;
 
-    if(axis == 0){
+    if (axis == 0) {
         noteSpectrogram = CreateSpectrogram(dictionary->shape[1], dictionary->shape[2]);
 
-        for(int r = 0; r < noteSpectrogram.matrix.rows; r++){
+        for (int r = 0; r < noteSpectrogram.matrix.rows; r++) {
             for (int c = 0; c < noteSpectrogram.matrix.cols; c++) {
                 noteSpectrogram.matrix.array[r][c] = dictionary->data[index][r][c];
             }
         }
-    }
-    else if(axis == 1){
+    } else if (axis == 1) {
 //        Spectrogram noteSpectrogram = CreateSpectrogram(dictionary->shape[1], dictionary->shape[0]);
         fprintf(stderr, "GetSpectrogramFromDictionary: axis == 1 not implemented yet\n");
         exit(1);
-    }
-    else if(axis == 2){
+    } else if (axis == 2) {
         noteSpectrogram = CreateSpectrogram(dictionary->shape[1], dictionary->shape[0]);
 
-        for(int r = 0; r < noteSpectrogram.matrix.rows; r++){
+        for (int r = 0; r < noteSpectrogram.matrix.rows; r++) {
             for (int c = 0; c < noteSpectrogram.matrix.cols; c++) {
                 noteSpectrogram.matrix.array[r][c] = dictionary->data[c][r][index];
             }
         }
-    }
-    else{
+    } else {
         fprintf(stderr, "GetSpectrogramFromDictionary: axis must be 0, 1 or 2\n");
         exit(1);
     }
@@ -197,35 +197,54 @@ Spectrogram GetSpectrogramFromDictionary(Dictionary const *dictionary, unsigned 
 Matrix GetMatrixFromDictionary(const Dictionary *dictionary, unsigned int axis, unsigned int index) {
     Matrix slice;
 
-    if(axis == 0){
+    if (axis == 0) {
         slice = CreateMatrix(dictionary->shape[1], dictionary->shape[2]);
 
-        for(int r = 0; r < slice.rows; r++){
+        for (int r = 0; r < slice.rows; r++) {
             for (int c = 0; c < slice.cols; c++) {
                 slice.array[r][c] = dictionary->data[index][r][c];
             }
         }
-    }
-    else if(axis == 1){
+    } else if (axis == 1) {
 //        Spectrogram noteSpectrogram = CreateSpectrogram(dictionary->shape[1], dictionary->shape[0]);
         fprintf(stderr, "GetSpectrogramFromDictionary: axis == 1 not implemented yet\n");
         exit(1);
-    }
-    else if(axis == 2){
+    } else if (axis == 2) {
         slice = CreateMatrix(dictionary->shape[1], dictionary->shape[0]);
 
-        for(int r = 0; r < slice.rows; r++){
+        for (int r = 0; r < slice.rows; r++) {
             for (int c = 0; c < slice.cols; c++) {
                 slice.array[r][c] = dictionary->data[c][r][index];
             }
         }
-    }
-    else{
+    } else {
         fprintf(stderr, "GetSpectrogramFromDictionary: axis must be 0, 1 or 2\n");
         exit(1);
     }
 
 
     return slice;
+}
+
+void NormaliseDictionary(Dictionary *dictionary) {
+    double max = 0;
+
+    for (int i = 0; i < dictionary->shape[0]; i++) {
+        for (int j = 0; j < dictionary->shape[1]; j++) {
+            for (int k = 0; k < dictionary->shape[2]; k++) {
+                if (dictionary->data[i][j][k] > max) {
+                    max = dictionary->data[i][j][k];
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < dictionary->shape[0]; i++) {
+        for (int j = 0; j < dictionary->shape[1]; j++) {
+            for (int k = 0; k < dictionary->shape[2]; k++) {
+                dictionary->data[i][j][k] /= max;
+            }
+        }
+    }
 }
 
