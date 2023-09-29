@@ -5,6 +5,7 @@
 #include "../headers/dynamicarray.h"
 #include "../headers/stft.h"
 #include "math.h"
+#include "evaluation.h"
 
 
 #include "wav.h"
@@ -31,6 +32,7 @@ int main() {
 //    stftTest();
 //    TestActivations();
 //    test();
+    GraphTest();
 
     const char *dictionary_directory = "C:\\Users\\ruanb\\OneDrive\\Desktop\\Piano Transcripton\\Piano Transcription (C)\\data_persisted\\dictionaries\\";
     const char *piano_W[3] = {"AkPnBsdf", "AkPnStgb", "AkPnBcht"};
