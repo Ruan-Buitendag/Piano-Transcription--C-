@@ -106,67 +106,11 @@ int MaxBipartiteMatching(Graph *graph) {
 }
 
 void GraphTest() {
-    Graph graph = CreateGraph(1000, 1000);
+    Matrix refs = LoadRefsFromFile(
+            "C:\\Users\\ruanb\\OneDrive\\Desktop\\Piano Transcripton\\Piano transcription\\MAPS\\AkPnBcht\\MUS\\MAPS_MUS-alb_se3_AkPnBcht.txt",
+            5);
 
-    int ref_i_test[] = {0, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 15, 16,
-                        17, 18, 20, 21, 22, 25, 26, 27, 28, 30, 32, 33, 34,
-                        35, 36, 37, 41, 42, 43, 44, 51, 52, 53, 54, 55, 57,
-                        58, 59, 60, 61, 62, 63, 64, 66, 68, 69, 70, 71, 73,
-                        74, 75, 76, 78, 79, 81, 82, 83, 86, 88, 90, 91, 92,
-                        93, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 107, 111,
-                        112, 114, 115, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126,
-                        129, 130, 132, 133, 134, 135, 136, 138, 139, 140, 141, 142, 144,
-                        145, 147, 148, 149, 150, 151, 152, 153, 154, 156, 157, 158, 160,
-                        161, 162, 163, 164, 167, 169, 171, 172, 174, 176, 177, 178, 179,
-                        181, 183, 184, 185, 186, 188, 190, 192, 193, 195, 196, 198, 199,
-                        200, 201, 203, 204, 205, 206, 207, 210, 213, 214, 215, 216, 218,
-                        219, 221, 222, 223, 224, 225, 227, 228, 229, 230, 232, 232, 233,
-                        234, 235, 236, 237, 238, 239, 240, 241, 242, 244, 246, 247, 248,
-                        249, 250, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263,
-                        264, 265, 266, 268, 269, 270, 271, 272, 273, 274, 277, 278, 279,
-                        280, 281, 282, 282, 283, 284, 285, 286, 287, 288, 289, 290, 292,
-                        293, 294, 296, 296, 298, 299, 301, 302, 303, 304, 305, 306, 306,
-                        307, 309, 309, 311, 314, 316, 317, 319, 321, 322, 323, 324, 325,
-                        326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 337, 338, 339,
-                        340, 341, 342, 343, 344, 345, 346, 348, 350, 351, 353, 354, 355,
-                        356, 357, 358, 360, 361, 364, 365, 366, 367, 371, 372, 373, 374,
-                        377, 378, 383, 384, 386, 387, 388, 389, 390, 391, 392};
-
-    int est_i_test[] = {164, 198, 51, 99, 100, 165, 199, 152, 147, 200, 135, 127, 101,
-                        153, 220, 69, 154, 221, 102, 103, 166, 201, 52, 167, 202, 155,
-                        148, 203, 136, 128, 104, 156, 222, 105, 168, 204, 243, 293, 53,
-                        3, 28, 4, 5, 157, 223, 289, 70, 244, 278, 169, 205, 80,
-                        279, 6, 290, 280, 245, 7, 90, 224, 184, 71, 185, 206, 106,
-                        170, 225, 246, 8, 29, 247, 9, 81, 10, 107, 91, 49, 108,
-                        82, 54, 83, 11, 137, 30, 109, 12, 138, 171, 13, 139, 92,
-                        72, 140, 110, 172, 207, 248, 294, 55, 14, 31, 15, 16, 226,
-                        291, 73, 17, 250, 281, 173, 208, 0, 84, 18, 292, 32, 251,
-                        19, 20, 93, 227, 186, 74, 187, 209, 174, 56, 228, 252, 21,
-                        253, 85, 22, 111, 94, 50, 95, 112, 86, 57, 87, 23, 141,
-                        33, 113, 142, 175, 24, 143, 96, 75, 114, 176, 254, 295, 79,
-                        25, 26, 27, 149, 188, 282, 129, 34, 229, 255, 193, 194, 1,
-                        115, 256, 35, 268, 58, 283, 36, 37, 269, 189, 130, 38, 230,
-                        257, 195, 116, 270, 258, 39, 271, 59, 284, 40, 296, 300, 41,
-                        297, 190, 285, 131, 272, 259, 42, 231, 260, 196, 117, 273, 261,
-                        43, 274, 60, 61, 286, 44, 298, 301, 45, 299, 191, 287, 132,
-                        275, 262, 232, 233, 197, 263, 118, 46, 62, 47, 48, 234, 264,
-                        119, 234, 264, 76, 235, 177, 210, 63, 68, 64, 236, 65, 265,
-                        178, 237, 276, 2, 66, 288, 77, 277, 179, 266, 88, 211, 120,
-                        238, 144, 212, 180, 267, 121, 213, 239, 158, 214, 97, 192, 98,
-                        215, 122, 181, 89, 123, 159, 150, 216, 145, 133, 124, 160, 240,
-                        161, 241, 182, 217, 67, 125, 183, 218, 162, 151, 219};
-
-
-    for (int i = 0; i < 297; i++) {
-        AddEdge(&graph, ref_i_test[i], est_i_test[i]);
-    }
-
-    int maxMatching = MaxBipartiteMatching(&graph);
-
-    printf("Max matching: %d\n", maxMatching);
-
-    DestroyGraph(&graph);
-
+    SaveMatrixToCSV("refs.csv", &refs);
 }
 
 // TODO: optimize for loops
@@ -234,7 +178,8 @@ void EvaluateTranscription(Matrix *ref, Matrix *est) {
 
     DestroyMatrix(&hits);
 
-    Graph graph = CreateGraph(ref->rows, est->rows);
+    Graph graph = CreateGraph(1000, 1000);
+//    Graph graph = CreateGraph(ref->rows, est->rows);
 
     for (int i = 0; i < counter; i++) {
         AddEdge(&graph, ref_i[i], est_i[i]);
@@ -244,16 +189,76 @@ void EvaluateTranscription(Matrix *ref, Matrix *est) {
 
 //    printf("Max matching: %d\n", maxMatching);
 
-    double precision = maxMatching / est->rows;
-    double recall = maxMatching / ref->rows;
+    double precision = (double)maxMatching / est->rows;
+    double recall = (double)maxMatching / ref->rows;
     double f1 = 2 * precision * recall / (precision + recall);
+//    FP = int(TP * (1 - prec) / prec)
+    int falsePositives = est->rows - maxMatching;
+    int falseNegatives = ref->rows - maxMatching;
 
+    printf("True positives: %d\n", maxMatching);
+    printf("False positives: %d\n", falsePositives);
+    printf("False negatives: %d\n", falseNegatives);
     printf("Precision: %f\n", precision);
     printf("Recall: %f\n", recall);
     printf("F1: %f\n", f1);
 
     DestroyGraph(&graph);
 
+}
+
+Matrix LoadRefsFromFile(const char *filename, double time_limit) {
+    FILE *file = fopen(filename, "r"); // Replace "your_file.txt" with the actual file name
+
+    if (file == NULL) {
+        printf("Failed to open the file.\n");
+        exit(1);
+    }
+
+    int rows = 0;
+    char line[100];
+    double temp;
+
+
+    fscanf(file, "%s %s %s", line, line, line); // Skip the first line (header)
+
+    // First pass to determine the number of rows
+    while(true) {
+        double onset;
+        double pitch;
+
+        fscanf(file, "%lf %lf %lf", &onset, &temp, &pitch);
+
+        if(onset > time_limit){
+            break;
+        }
+
+        rows++;
+    }
+
+    // Reset the file pointer to the beginning of the file
+    fseek(file, 0, SEEK_SET);
+    fscanf(file, "%s %s %s", line, line, line); // Skip the first line (header)
+
+
+    Matrix refs = CreateMatrix(rows, 2);
+
+
+    for (int row = 0; row < rows; row++) {
+        double onset;
+        double pitch;
+
+        fscanf(file, "%lf %lf %lf", &onset, &temp, &pitch);
+
+        if(onset > time_limit){
+            break;
+        }
+
+        refs.array[row][0] = onset;
+        refs.array[row][1] = pitch;
+    }
+
+    return refs;
 }
 
 

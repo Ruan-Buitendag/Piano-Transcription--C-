@@ -21,6 +21,8 @@ void NormalizeSpectrogram(Spectrogram *spectrogram);
 
 void SaveSpectrogramToCSV(const char *filename, Spectrogram *spectrogram);
 
+double GetDelay(Spectrogram const *spectrogram, double threshold);
+
 void spectrogramTest();
 
 #endif //C_PIANO_TRANSCRIPTION_SPECTROGRAM_H

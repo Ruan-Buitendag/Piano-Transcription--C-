@@ -2,6 +2,7 @@
 // Created by ruanb on 9/12/2023.
 //
 
+#include <string.h>
 #include "matrix.h"
 #include "stdlib.h"
 #include "stdio.h"
@@ -22,7 +23,7 @@ Matrix CreateMatrix(unsigned int nRows, unsigned int nCols) {
 }
 
 void DestroyMatrix(Matrix *matrix) {
-    if(matrix->array == NULL){
+    if (matrix->array == NULL) {
         return;
     }
 
@@ -140,7 +141,7 @@ Matrix ShiftMatrix(const Matrix *matrix, unsigned int numShifts) {
     return shifted;
 }
 
-void SaveMatrixToCSV(const char *filename, Matrix const* matrix) {
+void SaveMatrixToCSV(const char *filename, Matrix const *matrix) {
     FILE *file = fopen(filename, "w");
     if (file == NULL) {
         fprintf(stderr, "SaveMatrixToCSV: Error opening file");
@@ -160,5 +161,65 @@ void SaveMatrixToCSV(const char *filename, Matrix const* matrix) {
 
     fclose(file);
 }
+
+Matrix LoadMatrixFromCSV(const char *filename) {
+//    determine how many rows in the file
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        fprintf(stderr, "LoadMatrixFromCSV: Error opening file");
+        exit(1);
+    }
+
+    int rows = 0;
+    int cols = 1;
+
+    while (!feof(file)) {
+        char ch = fgetc(file);
+        if (ch == '\n') {
+            rows++;
+        } else if (ch == ',' && rows == 0) {
+            cols++;
+        }
+    }
+
+    Matrix result = CreateMatrix(rows, cols);
+
+//    set the file pointer back to the start of the file
+    fseek(file, 0, SEEK_SET);
+
+//    read the data into the matrix
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols - 1; c++) {
+            fscanf(file, "%lf,", &result.array[r][c]);
+        }
+        fscanf(file, "%lf\n", &result.array[r][cols - 1]);
+    }
+
+    return result;
+}
+
+void matrixTest() {
+
+    Matrix ass = CreateMatrix(10, 10);
+
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+            ass.array[i][j] = i + j;
+        }
+    }
+
+    SaveMatrixToCSV("matrixloadtest.csv", &ass);
+
+
+    Matrix assjole = LoadMatrixFromCSV("matrixloadtest.csv");
+
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+            printf("%lf  ", assjole.array[i][j]);
+        }
+    }
+}
+
+
 
 

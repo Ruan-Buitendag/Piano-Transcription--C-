@@ -24,8 +24,11 @@ void FillMatrix(Matrix* matrix, double value);
 void NormaliseMatrix(Matrix *matrix);
 Matrix ShiftMatrix(Matrix const *matrix, unsigned int numShifts);
 
+Matrix TrimMatrix(Matrix * matrix);
+
 void SaveMatrixToCSV(const char *filename, Matrix const* matrix) ;
+Matrix LoadMatrixFromCSV(const char *filename);
 
-
+void matrixTest();
 
 #endif //C_PIANO_TRANSCRIPTION_MATRIX_H

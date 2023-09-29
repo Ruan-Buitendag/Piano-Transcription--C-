@@ -40,6 +40,8 @@ void GraphTest();
 
 void EvaluateTranscription(Matrix *ref, Matrix *est);
 
+Matrix LoadRefsFromFile(const char * filename, double time_limit);
+
 
 
 #endif //C_PIANO_TRANSCRIPTION_EVALUATION_H

@@ -2,6 +2,7 @@
 // Created by ruanb on 9/6/2023.
 //
 
+#include <stdbool.h>
 #include "spectrogram.h"
 #include "stdlib.h"
 #include "stdio.h"
@@ -67,5 +68,25 @@ void NormalizeSpectrogram(Spectrogram *spectrogram) {
             spectrogram->matrix.array[r][c] /= max;
         }
     }
+}
+
+double GetDelay(const Spectrogram *spectrogram, double threshold) {
+    int column = 0;
+
+    bool foundStart = false;
+
+    while (!foundStart) {
+        for (int i = 0; i < spectrogram->matrix.rows; i++) {
+            if (spectrogram->matrix.array[i][column] > threshold) {
+                foundStart = true;
+                break;
+            }
+        }
+        column++;
+    }
+
+    double delay = --column * (spectrogram->timeStep);
+
+    return delay;
 }
 

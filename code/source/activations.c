@@ -285,7 +285,8 @@ void TestActivations() {
 }
 
 Matrix TranscribeNotesFromActivations(const Matrix *activations, double threshold, double time_step) {
-    Matrix notes = CreateMatrix(500, 3);
+//    Matrix notes = CreateMatrix(500, 3);
+    Matrix notes = CreateMatrix(500, 2);
 
     int note_count = 0;
 
@@ -360,9 +361,10 @@ Matrix TranscribeNotesFromActivations(const Matrix *activations, double threshol
                 if(note_presence){
                     double current_offset = time_index * time_step;
                     notes.array[note_count][0] = current_onset;
-                    notes.array[note_count][1] = current_offset;
-                    notes.array[note_count][2] = current_pitch;
-
+//                    notes.array[note_count][1] = current_offset;
+//                    notes.array[note_count][2] = current_pitch;
+                    notes.array[note_count][1] = current_pitch;
+                    note_count++;
 //                    TODO: writing notes to midi file
 
                     note_presence = false;
