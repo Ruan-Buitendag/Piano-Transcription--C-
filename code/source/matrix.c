@@ -167,7 +167,8 @@ Matrix LoadMatrixFromCSV(const char *filename) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
         fprintf(stderr, "LoadMatrixFromCSV: Error opening file");
-        exit(1);
+        return CreateMatrix(0, 0);
+//        exit(1);
     }
 
     int rows = 0;

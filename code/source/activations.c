@@ -5,6 +5,8 @@
 #include "activations.h"
 #include "math.h"
 #include "stdio.h"
+#include "wav.h"
+#include "stft.h"
 
 double BetaDivergence(const Matrix *x, const Matrix *y, double beta) {
     Matrix d = CreateMatrix(x->rows, x->cols);
@@ -273,5 +275,24 @@ Matrix ComputeConvolution(const Dictionary *dictionary, const Matrix *matrix2, u
 
 void TestActivations() {
 
+}
+
+Matrix GetActivationsFromFile(const char *filename, Dictionary *dictionary) {
+    WavFile wav = ReadWav(filename);
+
+    DynamicArray mono = StereoToMono(&wav, "average");
+
+    Spectrogram spec = STFT(&mono, 4096, 882, 8192, 5, 44100);
+    Spectrogram filtered = HardFilterSpectrogram(&spec, 1500);
+
+    Dictionary aaaa = HardFilterSpectrograms(dictionary, 1500);
+
+    NormaliseDictionary(&aaaa);
+
+    DestroySpectrogram(&spec);
+
+    Matrix activations = ComputeActivations(&filtered, 20, 1, 0.1, &aaaa);
+
+    SaveMatrixToCSV("activations.csv", &activations);
 }
 
