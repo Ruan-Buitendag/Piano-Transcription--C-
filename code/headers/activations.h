@@ -16,8 +16,6 @@ Matrix ComputeConvolution(Dictionary const *dictionary, Matrix const *matrix2, u
 Matrix
 ComputeActivations(Spectrogram const *input, unsigned int iterations, double beta, double error, Dictionary *dictionary);
 
-Matrix TranscribeNotesFromActivations(Matrix const * activations, double threshold, double timeStep);
-
 void TestActivations();
 
 #endif //C_PIANO_TRANSCRIPTION_ACTIVATIONS_H

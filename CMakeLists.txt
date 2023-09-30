@@ -19,7 +19,9 @@ add_executable(C_Piano_Transcription code/source/main.c
         code/source/matrix.c
         code/headers/matrix.h
         code/source/evaluation.c
-        code/headers/evaluation.h)
+        code/headers/evaluation.h
+        code/source/transcription.c
+        code/source/transcription.h)
 
 
 find_package(HDF5 COMPONENTS C HL)

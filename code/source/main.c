@@ -10,6 +10,7 @@
 
 #include "wav.h"
 #include "activations.h"
+#include "transcription.h"
 
 
 void test() {
@@ -104,7 +105,9 @@ int main() {
 
         Matrix activations = LoadMatrixFromCSV("activations.csv");
 
-        Matrix notes = TranscribeNotesFromActivations(&activations, 0.05, 0.02);
+        double threshold = GetThreshold(&activations);
+
+        Matrix notes = TranscribeNotesFromActivations(&activations, threshold, 0.02);
 
 //    SaveMatrixToCSV("notes.csv", &notes);
 
